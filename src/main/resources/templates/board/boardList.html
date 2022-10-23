@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+      layout:decorate="~{layouts/layoutBasic}">
+    
+    	<th:block layout:fragment="css">
+    		<style>
+				
+				.board-main{
+					margin:0 auto;
+					margin-top:50px;
+					width: 900px;
+				}
+				
+				table{
+					margin-top: 40px;
+				}
+				
+				tr{
+					text-align: center;
+				}
+				
+				td{
+					text-align: center;
+				}
+				.boardSearch{
+					margin-bottom: 20px;
+				}
+				
+			</style>
+    	</th:block> 
+      	<th:block layout:fragment="script">
+      		<script th:inline="javascript">
+				$(document).ready(function(){
+					
+					//모달실행시 화면밖을 클리시 닫히는 경우를 방지 하기위하여
+					$('#chkModal').modal({backdrop: 'static', keyboard: false}) ;
+					
+					//모달창 닫기
+					$('.close').click(function(e){
+						e.preventDefault();
+						$('#chkModal').modal("hide");
+					});
+					
+					//모달창 닫기
+					$('#close_btn').click(function(e){
+						e.preventDefault();
+						$('#chkModal').modal("hide");
+					});
+					
+					//search_btn클릭시
+					$("#search_btn").on("click",function(e){
+						e.preventDefault();
+						page(0);
+					})
+					
+					$("a[name='title']").on("click",function(e){
+						e.preventDefault();
+						//로그인한 유저 아이디 없으면 'anonymousUser'
+						let userId = $("#userId").val();
+						//유저의 role 가져오기
+						let role = $("#role").val();
+						//현재 페이지
+						let page = $("#page").val();
+						//상세보기할 작성자 명
+						let writer = $(this).data("writer");
+						//게시물 번호
+						let bno = $(this).data("bno");
+						//공개 범위
+						let viewStatus = $(this).data("viewstatus");
+						
+						
+						if(userId == 'anonymousUser'){
+							modalAlert('로그인한 회원만 볼 수 있습니다.');
+							return false;
+						}
+						
+						if(viewStatus == 'PRIVATE'&& userId != writer && role != 'ADMIN'){
+							modalAlert('비공개된 게시물입니다.');
+							return false;
+						}
+						
+						//모든 권한 체크 이후
+						location.href='/board/boardDetail/'+bno+'?page='+page;
+						
+					})
+					
+				})
+				
+				//페이지 이동 및 검색 기능
+				function page(page){
+					let searchBy = $("#searchBy").val();
+					let keyword = $("#keyword").val();
+					location.href = "/board/boardList/"+page+"?searchBy="+searchBy+"&keyword="+keyword;
+				}
+				
+				/* Modal알림창 */
+				function modalAlert(msg){
+					//모달창 오픈
+					$('#chkModal').modal("show");
+					
+					/* 요소 초기화 */
+					$("#modal-body").empty();
+					
+					//모달창 타이틀
+					$("#chkTitle").html("알림");
+					
+					//모달창 내용
+					$("#modal-body").append("<span style='font-weight: bold;'>"+msg+"</span>");
+				}
+				
+			</script>
+      	</th:block>
+    <div layout:fragment="content">
+     <form th:action="@{'/board/boardList/' + ${boardList.number}}" role="form" method="get" th:object="${boardList}">
+    	<input type="hidden" id="userId" th:value="${userId}">
+    	<input type="hidden" id="role" th:value="${role}">
+    	<input type="hidden" id="page" th:value="${boardList.number}">
+    	<div class="board-main">
+    		<h3>JPA 게시판 리스트</h3>
+		<div class="boardSearch d-flex  align-items-center" th:object="${boardSearchDTO}" style="float: right;">
+           	<select class="form-select" th:field="*{searchBy}" id="searchBy" style="margin-right: 15px; width: 150px;">
+				  <option value="T">제목</option>
+				  <option value="W">작성자</option>
+				  <option value="C">내용</option>
+				  <option value="TW">제목+작성자</option>
+			</select>
+			<input type="text" class="form-control" th:field="*{keyword}" id="keyword"  placeholder="검색어를 입력해주세요." style="width: 250px;">
+	        <a class="link-secondary" id="search_btn" aria-label="Search">
+	          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"></circle><path d="M21 21l-5.2-5.2"></path></svg>
+	        </a>
+      	</div>  	
+    		<table class="table table-Secondary table-striped table-hover">
+	          <thead>
+	            <tr>
+	              <th scope="col">번호</th>
+	              <th scope="col">제목</th>
+	              <th scope="col">작성자</th>
+	              <th scope="col">조회수</th>
+	              <th scope="col">작성일</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <tr th:each="board, status:${boardList.getContent()}">
+	              <td th:text="${board.id}"></td>
+	              <td>
+	              	<a name="title" th:data-viewstatus="${board.viewStatus}" th:data-writer="${board.writer}" th:data-bno="${board.id}" href="#" th:text="${board.title}"></a>
+	              </td>
+	              <td th:text="${board.writer}"></td>
+	              <td th:text="${board.viewCnt}"></td>
+	              <td th:text="${#temporals.format(board.regTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+	            </tr>
+	           	<tr th:if="${boardList.isEmpty()}">
+	              <td colspan="5">검색조건에 따른 결과가 없습니다.</td>
+	            </tr>
+	          </tbody>
+        	</table>
+	        <nav aria-label="Page navigation example" th:with="start=${(boardList.number/maxPage)*maxPage + 1}, end=(${(boardList.totalPages == 0) ? 1 : (start + (maxPage - 1) < boardList.totalPages ? start + (maxPage - 1) : boardList.totalPages)})">
+			  <ul class="pagination justify-content-center">
+			    <li class="page-item" th:classappend="${boardList.first}?'disabled'">
+			      <a class="page-link" th:onclick="'javascript:page(' + ${boardList.number - 1} + ')'" aria-label="Previous">
+			        <span aria-hidden="true">&laquo;</span>
+			      </a>
+			    </li>
+			    <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${boardList.number eq page-1}?'active':''">
+			    	<a class="page-link" th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" >[[${page}]]</a>
+			    </li>
+			    <li class="page-item" th:classappend="${boardList.last}?'disabled'">
+			      <a class="page-link" th:onclick="'javascript:page(' + ${boardList.number + 1} + ')'" aria-label="Next">
+			        <span aria-hidden="true">&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
+			</nav>
+    	</div>
+	 	<!-- 알림 모달 창 -->
+		<div class="modal fade" id="chkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="chkTitle"></h5>
+		        <div class="close" data-dismiss="modal" aria-label="Close">
+		          <img  th:src="@{/img/close.png}">
+		        </div>
+		      </div>
+		      <div class="modal-body" id="modal-body">
+		      </div>
+		      <div class="modal-footer" id="modal-footer">
+		      		<button type='button' id="close_btn" class='btn btn-secondary'>닫기</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+  	</div>
+</html>

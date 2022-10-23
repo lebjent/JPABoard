@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+      layout:decorate="~{layouts/layoutBasic}">
+    
+    	<th:block layout:fragment="css">
+			<style>
+				.content{
+					height: 400px;
+				}
+				.col-group{
+					margin: 0 auto;
+					margin-top:100px;
+					text-align: center;
+				}
+				.col{
+					display:inline-block;
+					vertical-align:middle;
+					width: 450px;
+				}
+				.join-img{
+					margin-bottom: 20px;
+				}
+			</style>
+		</th:block> 
+        <th:block layout:fragment="script">
+        	<script type="text/javascript">
+				$(document).ready(function(){
+					$("#userJoin").on("click",function(){
+						location.href = "/user/userJoinView";
+					})
+					
+					$("#adminJoin").on("click",function(){
+						location.href = "/user/adminJoinView";
+					})
+					
+				})
+			</script>
+		</th:block>
+    <div layout:fragment="content">
+    	<div class="col-group">
+	      <div class="col">
+	        <div class="card mb-4 rounded-3 shadow-sm">
+	          <div class="card-header py-3">
+	            <h4 class="my-0 fw-normal">일반회원</h4>
+	          </div>
+	          <div class="card-body">
+				<div class="join-img">
+					<img th:src="@{/img/user.png}" alt="" width="125" height="125" id="logo">
+				</div>
+	            <button type="button" id="userJoin" class="w-100 btn btn-lg btn-primary">가입</button>
+	          </div>
+	        </div>
+	      </div>
+	      <div class="col">
+	        <div class="card mb-4 rounded-3 shadow-sm">
+	          <div class="card-header py-3">
+	            <h4 class="my-0 fw-normal">관리자회원</h4>
+	          </div>
+	          <div class="card-body">
+				<div class="join-img">
+					<img th:src="@{/img/admin.png}" alt="" width="125" height="125" id="logo">
+				</div>
+	            <button type="button" id="adminJoin" class="w-100 btn btn-lg btn-danger">가입</button>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+    </div>
+</html>

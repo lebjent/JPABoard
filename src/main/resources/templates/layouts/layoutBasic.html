@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="_csrf_header" th:content="${_csrf.headerName}" th:if="${_csrf} ne null">
+<meta name="_csrf" th:content="${_csrf.token}" th:if="${_csrf} ne null">
+<title>JPA-BoardProject</title>
+	
+	<link th:href="@{/css/bootstrap/bootstrap.css}" rel="stylesheet">
+	
+	 <script th:src="@{/js/jquery/jquery-3.2.1.min.js}"></script>
+	 <script th:src="@{/js/bootstrap/popper.min.js}"></script>
+	 <script th:src="@{/js/bootstrap/bootstrap.js}"></script>
+	
+	<th:block layout:fragment="script"></th:block>
+	<th:block layout:fragment="css">
+	</th:block>
+</head>
+<body>
+	<div th:replace="include/header::header"></div>
+	<div layout:fragment="content" class="content">
+
+	</div>
+
+	<div th:replace="include/footer::footer"></div>
+	
+</body>
+</html>

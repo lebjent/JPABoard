@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+      layout:decorate="~{layouts/layoutBasic}">
+    
+    	<th:block layout:fragment="css">
+			<style>
+				.content{
+					height: 600px;
+				}
+			</style>
+		</th:block> 
+      
+    <div layout:fragment="content">
+    	<h2>메인 페이지</h2>
+    </div>
+</html>

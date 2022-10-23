@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JPA-BoardProject 로그인 페이지</title>
+	
+	<link th:href="@{/css/bootstrap/bootstrap.css}" rel="stylesheet">
+	
+	 <script th:src="@{/js/jquery/jquery-3.2.1.min.js}"></script>
+	 <script th:src="@{/js/bootstrap/popper.js}"></script>
+	 <script th:src="@{/js/bootstrap/bootstrap.js}"></script>
+	
+	<th:block layout:fragment="css">
+		<style>
+			.error{
+				color: red;
+				font-size: 9pt;
+				font-weight: bold;
+			}
+			
+		</style>
+	</th:block>
+</head>
+<body>
+<div class="content">
+  	<div class="m-auto" style="width: 400px;">
+	  <form action="/user/login" role="form" method="post">
+	  	<div style="margin: auto; text-align: center; margin-top: 50px; margin-bottom: 50px;">
+	    	<img th:src="@{/img/icon.png}" alt="" width="95" height="95" id="logo">
+	    </div>
+	    <div class="form-floating">
+	      <input type="text" class="form-control" name="userId" id="userId" placeholder="아이디를 입력하세요.">
+	      <label for="userId">Id</label>
+	    </div>
+	    <div class="form-floating">
+	      <input type="password" class="form-control" name="password" id="password" placeholder="비밀번호를 입력하세요.">
+	      <label for="password">Password</label>
+	    </div>
+        <div class="m-auto" style="text-align: left;">
+	    	<p th:if="loginErrorMsg" class="error" th:text="${loginErrorMsg}"></p>
+	    </div>
+	    <div class="checkbox mb-3">
+	      <label>
+	        <input type="checkbox" value="remember-me"> <span>아이디 기억하기</span>
+	      </label>
+	    </div>
+	    <div style="float: right;">
+	    	<button type="button" class="btn btn-link" style="color:black; font-size: 10pt;" onclick="location.href='/user/userType'">회원가입</button>
+	    	<span style="font-size: 10px; font-weight: bold;">/</span>
+		    <button type="button" class="btn btn-link" style="color:black; font-size: 10pt;">아이디/패스워드 찾기</button>
+	    </div>
+	    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+	    <button class="w-100 btn btn-lg btn-success" type="submit">로그인</button>
+	    <button type="button" class="w-100 btn btn-outline-success" style="margin-top: 10px;" onclick="location.href='/'">메인페이지로 돌아가기</button>
+	  </form>
+	</div>
+</div>	
+</body>    
+</html>

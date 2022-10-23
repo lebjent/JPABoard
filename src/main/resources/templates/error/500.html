@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+      layout:decorate="~{layouts/layoutBasic}">
+    
+    	<th:block layout:fragment="css">
+			<style>
+				.content{
+					height: 500px;
+				}
+				
+				.error{
+					margin: 0 auto;
+					margin-top: 60px;
+					text-align: center;
+				}
+				
+				.error-img{
+					width: 200px;
+					height: 200px;
+				}
+				
+				.error-msg{
+					font-size: 40pt;
+					font-weight: bold;
+				}
+				
+				.error-msg2{
+					font-size: 20pt;
+					font-weight: bold;
+				}
+				
+			</style>
+		</th:block> 
+        <th:block layout:fragment="script">
+		</th:block>
+    <div layout:fragment="content">
+    	<div class="error">
+    		<img th:src="@{/img/error.png}" class="error-img">
+    		<p class="error-msg">500</p>
+    		<p class="error-msg2">에러가 발생하였습니다.</p>
+    		<button type="button" class="btn btn-outline-danger" onclick="location.href='/'">메인 페이지로 돌아가기</button>
+    	</div>
+    </div>
